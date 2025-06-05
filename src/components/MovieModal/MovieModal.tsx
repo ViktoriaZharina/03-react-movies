@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { type Movie } from "../../types/movie.ts";
 
 interface MovieModalProps {
@@ -7,6 +7,20 @@ interface MovieModalProps {
 }
 
 const MovieModal: React.FC<MovieModalProps> = ({ movie, onClose }) => {
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose(); // Close modal on Escape key
+      }
+    };
+
+    window.addEventListener("keydown", handleEsc);
+
+    return () => {
+      window.removeEventListener("keydown", handleEsc); // Clean up on unmount
+    };
+  }, [onClose]);
+
   return (
     <div className="backdrop" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>

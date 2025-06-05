@@ -42,8 +42,7 @@ function App() {
   };
 
   const handleSelectMovie = (movie: Movie) => {
-    console.log("Movie selected:", movie); // Debugging line to check movie selection
-    setSelectedMovie(movie);
+    setSelectedMovie(movie); // Set selected movie and show the modal
     document.body.style.overflow = "hidden"; // Disable scrolling when modal is open
   };
 
@@ -56,14 +55,11 @@ function App() {
     <>
       <Toaster position="top-right" />
       <SearchBar onSubmit={handleSearch} />
-
       {isLoading && <Loader />}
       {error && <ErrorMessage />}
       {movies.length > 0 && (
         <MovieGrid movies={movies} onSelect={handleSelectMovie} />
       )}
-
-      {/* Ensure MovieModal only renders when a movie is selected */}
       {selectedMovie && (
         <MovieModal movie={selectedMovie} onClose={handleCloseModal} />
       )}
