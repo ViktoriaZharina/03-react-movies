@@ -42,12 +42,13 @@ function App() {
   };
 
   const handleSelectMovie = (movie: Movie) => {
+    console.log("Movie selected:", movie); // Debugging line to check movie selection
     setSelectedMovie(movie);
     document.body.style.overflow = "hidden"; // Disable scrolling when modal is open
   };
 
   const handleCloseModal = () => {
-    setSelectedMovie(null);
+    setSelectedMovie(null); // Close modal
     document.body.style.overflow = "auto"; // Enable scrolling when modal is closed
   };
 

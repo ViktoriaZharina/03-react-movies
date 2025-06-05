@@ -10,7 +10,11 @@ const MovieModal: React.FC<MovieModalProps> = ({ movie, onClose }) => {
   return (
     <div className="backdrop" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <img src={movie.poster_path} alt={movie.title} className="image" />
+        <img
+          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+          alt={movie.title}
+          className="image"
+        />
         <div className="content">
           <h2>{movie.title}</h2>
           <p>{movie.overview}</p>
