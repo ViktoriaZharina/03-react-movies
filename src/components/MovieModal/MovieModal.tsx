@@ -1,44 +1,68 @@
-import React, { useEffect } from "react";
-import { type Movie } from "../../types/movie.ts";
+import { createPortal } from "react-dom";
+import css from "./MovieModal.module.css";
+import { type Movie } from "../../types/movie";
+import { useEffect } from "react";
 
 interface MovieModalProps {
-  movie: Movie;
   onClose: () => void;
+  movie: Movie | null;
 }
 
-const MovieModal: React.FC<MovieModalProps> = ({ movie, onClose }) => {
+export default function MovieModal({ onClose, movie }: MovieModalProps) {
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose(); // Close modal on Escape key
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
       }
     };
-
-    window.addEventListener("keydown", handleEsc);
-
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
     return () => {
-      window.removeEventListener("keydown", handleEsc); // Clean up on unmount
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
     };
   }, [onClose]);
 
-  return (
-    <div className="backdrop" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+
+  if (!movie) return null;
+
+  return createPortal(
+    <div
+      className={css.backdrop}
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className={css.modal}>
+        <button
+          className={css.closeButton}
+          onClick={onClose}
+          aria-label="Close modal"
+        >
+          &times;
+        </button>
         <img
-          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
           alt={movie.title}
-          className="image"
+          className={css.image}
         />
-        <div className="content">
+        <div className={css.content}>
           <h2>{movie.title}</h2>
           <p>{movie.overview}</p>
-          <button className="closeButton" onClick={onClose}>
-            X
-          </button>
+          <p>
+            <strong>Release Date:</strong> {movie.release_date}
+          </p>
+          <p>
+            <strong>Rating:</strong> {movie.vote_average}
+          </p>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
-};
-
-export default MovieModal;
+}
