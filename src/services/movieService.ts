@@ -11,7 +11,7 @@ interface FetchMoviesParams {
 export default async function fetchMovies({
   query,
 }: FetchMoviesParams): Promise<Movie[]> {
-  const response = await axios.get(BASE_URL, {
+  const response = await axios.get<{ results: Movie[] }>(BASE_URL, {
     params: {
       query,
     },

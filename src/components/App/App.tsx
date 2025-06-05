@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { type Movie } from "../../types/movie.ts";
 import fetchMovies from "../../services/movieService.ts";
@@ -8,6 +8,7 @@ import MovieGrid from "../MovieGrid/MovieGrid";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import MovieModal from "../MovieModal/MovieModal.tsx";
+
 function App() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,29 +43,13 @@ function App() {
 
   const handleSelectMovie = (movie: Movie) => {
     setSelectedMovie(movie);
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = "hidden"; // Disable scrolling when modal is open
   };
 
   const handleCloseModal = () => {
     setSelectedMovie(null);
-    document.body.style.overflow = "auto";
+    document.body.style.overflow = "auto"; // Enable scrolling when modal is closed
   };
-
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        handleCloseModal();
-      }
-    };
-
-    if (selectedMovie) {
-      window.addEventListener("keydown", handleEsc);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleEsc);
-    };
-  }, [selectedMovie]);
 
   return (
     <>
@@ -77,6 +62,7 @@ function App() {
         <MovieGrid movies={movies} onSelect={handleSelectMovie} />
       )}
 
+      {/* Ensure MovieModal only renders when a movie is selected */}
       {selectedMovie && (
         <MovieModal movie={selectedMovie} onClose={handleCloseModal} />
       )}

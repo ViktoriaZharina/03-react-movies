@@ -2,21 +2,23 @@ import { type FormEvent, useState } from "react";
 import styles from "./SearchBar.module.css";
 import toast from "react-hot-toast";
 
+// Define the expected type of the onSubmit prop in SearchBarProps
 interface SearchBarProps {
-  onSubmit: (query: string) => void;
+  onSubmit: (query: string) => Promise<void>;
 }
 
 export default function SearchBar({ onSubmit }: SearchBarProps) {
   const [query, setQuery] = useState("");
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (query.trim() === "") {
       toast.error("Please enter your search query.");
       return;
     }
-    onSubmit(query);
-    setQuery("");
+    // Pass the query to the onSubmit handler from props
+    await onSubmit(query);
+    setQuery(""); // Reset the input field
   };
 
   return (

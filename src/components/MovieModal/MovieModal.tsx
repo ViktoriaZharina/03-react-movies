@@ -1,60 +1,26 @@
-import { useEffect } from "react";
-import styles from "./MovieModal.module.css";
-import { type Movie } from "../../types/movie";
+import React from "react";
+import { type Movie } from "../../types/movie.ts";
 
 interface MovieModalProps {
   movie: Movie;
   onClose: () => void;
 }
 
-export default function MovieModal({ movie, onClose }: MovieModalProps) {
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", handleEsc);
-    return () => {
-      document.body.style.overflow = "auto";
-      window.removeEventListener("keydown", handleEsc);
-    };
-  }, [onClose]);
-
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) onClose();
-  };
-
+const MovieModal: React.FC<MovieModalProps> = ({ movie, onClose }) => {
   return (
-    <div
-      className={styles.backdrop}
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-    >
-      <div className={styles.modal}>
-        <button
-          className={styles.closeButton}
-          onClick={onClose}
-          aria-label="Close modal"
-        >
-          &times;
-        </button>
-        <img
-          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-          alt={movie.title}
-          className={styles.image}
-        />
-        <div className={styles.content}>
+    <div className="backdrop" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <img src={movie.poster_path} alt={movie.title} className="image" />
+        <div className="content">
           <h2>{movie.title}</h2>
           <p>{movie.overview}</p>
-          <p>
-            <strong>Release Date:</strong> {movie.release_date}
-          </p>
-          <p>
-            <strong>Rating:</strong> {movie.vote_average}/10
-          </p>
+          <button className="closeButton" onClick={onClose}>
+            X
+          </button>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default MovieModal;
